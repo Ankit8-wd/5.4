@@ -3,11 +3,18 @@ const fs = require("fs");
 const fsp = require("fs/promises");
 const path = require("path");
 const { URL } = require("url");
+const APIClient = require("./apiClient");
 
 const PORT = process.env.PORT || 3000;
 const publicDir = path.join(__dirname, "public");
 const dataDir = path.join(__dirname, "data");
 const messagesPath = path.join(dataDir, "messages.json");
+
+// Initialize API clients for external services
+const jsonPlaceholderAPI = new APIClient("https://jsonplaceholder.typicode.com", 5000);
+const publicAPIs = {
+  jsonplaceholder: jsonPlaceholderAPI
+};
 
 const mimeTypes = {
   ".html": "text/html; charset=utf-8",
@@ -88,6 +95,81 @@ async function handleApi(req, res, url) {
       status: "ok",
       uptimeSeconds: Math.round(process.uptime())
     });
+  }
+
+  // Serve the apiClient.js file to clients
+  if (url.pathname === "/api/client" && req.method === "GET") {
+    try {
+      const clientCode = await fsp.readFile(path.join(__dirname, "apiClient.js"), "utf8");
+      res.writeHead(200, {
+        "Content-Type": "application/javascript; charset=utf-8"
+      });
+      res.end(clientCode);
+    } catch (error) {
+      return sendJson(res, 500, { error: "Failed to load API client" });
+    }
+  }
+
+  // Proxy endpoint: Make external API requests through the server
+  if (url.pathname === "/api/proxy" && req.method === "POST") {
+    let payload;
+    try {
+      payload = JSON.parse(await readRequestBody(req));
+    } catch {
+      return sendJson(res, 400, { error: "Invalid JSON payload." });
+    }
+
+    const { service, endpoint, method = "GET", data = null } = payload;
+
+    if (!service || !endpoint) {
+      return sendJson(res, 400, { error: "Missing required fields: service, endpoint" });
+    }
+
+    const api = publicAPIs[service];
+    if (!api) {
+      return sendJson(res, 400, { error: `Service '${service}' not available.` });
+    }
+
+    try {
+      let result;
+      switch (method.toUpperCase()) {
+        case "POST":
+          result = await api.post(endpoint, data);
+          break;
+        case "PUT":
+          result = await api.put(endpoint, data);
+          break;
+        case "DELETE":
+          result = await api.delete(endpoint);
+          break;
+        case "GET":
+        default:
+          result = await api.get(endpoint);
+      }
+      return sendJson(res, 200, { success: true, data: result });
+    } catch (error) {
+      return sendJson(res, 500, {
+        success: false,
+        error: error.message,
+        status: error.response?.status
+      });
+    }
+  }
+
+  // Example endpoint: Fetch external data using apiClient
+  if (url.pathname === "/api/external/users" && req.method === "GET") {
+    try {
+      const users = await jsonPlaceholderAPI.get("/users?_limit=5");
+      return sendJson(res, 200, { 
+        message: "Users fetched from JSONPlaceholder API",
+        users 
+      });
+    } catch (error) {
+      return sendJson(res, 500, {
+        error: "Failed to fetch users",
+        details: error.message
+      });
+    }
   }
 
   if (url.pathname === "/api/messages" && req.method === "GET") {
