@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Studio North</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Instrument+Serif:ital@0;1&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="hero">
+        <nav class="topbar">
+          <div class="brand">
+            <span class="brand-mark"></span>
+            <span>Studio North</span>
+          </div>
+          <a class="nav-link" href="#contact">Start a project</a>
+        </nav>
+
+        <div class="hero-content">
+          <div class="hero-copy">
+            <p class="eyebrow">Full-stack websites that feel alive</p>
+            <h1>Design-forward product sites with a working backend from day one.</h1>
+            <p class="lede">
+              This starter includes a responsive frontend, a Node.js API, and real
+              message persistence so your website is not just a mockup.
+            </p>
+            <div class="hero-actions">
+              <a class="button button-primary" href="#contact">Launch your brief</a>
+              <a class="button button-secondary" href="#messages">View submissions</a>
+            </div>
+          </div>
+
+          <section class="hero-card">
+            <p class="card-label">Backend status</p>
+            <div class="status-row">
+              <span class="status-dot"></span>
+              <strong id="health-status">Checking API...</strong>
+            </div>
+            <p class="card-note">
+              The frontend calls the backend on load and updates this status live.
+            </p>
+          </section>
+        </div>
+      </header>
+
+      <main>
+        <section class="features">
+          <article class="feature">
+            <p class="feature-index">01</p>
+            <h2>Responsive frontend</h2>
+            <p>Bold typography, layered backgrounds, and clean sections that adapt well on mobile and desktop.</p>
+          </article>
+          <article class="feature">
+            <p class="feature-index">02</p>
+            <h2>Custom API</h2>
+            <p>A lightweight Node server exposes JSON endpoints for health checks and form submissions.</p>
+          </article>
+          <article class="feature">
+            <p class="feature-index">03</p>
+            <h2>Persistent data</h2>
+            <p>Contact form entries are stored in a local JSON file so the site behaves like a real app.</p>
+          </article>
+        </section>
+
+        <section class="content-grid">
+          <section class="panel panel-form" id="contact">
+            <div class="panel-header">
+              <p class="eyebrow">Project intake</p>
+              <h2>Send a message to the backend</h2>
+            </div>
+
+            <form id="contact-form">
+              <label>
+                Name
+                <input type="text" name="name" placeholder="Jane Doe" required />
+              </label>
+              <label>
+                Email
+                <input type="email" name="email" placeholder="jane@example.com" required />
+              </label>
+              <label>
+                Message
+                <textarea
+                  name="message"
+                  rows="5"
+                  placeholder="Tell us what you want to build..."
+                  required
+                ></textarea>
+              </label>
+              <button class="button button-primary" type="submit">Submit enquiry</button>
+              <p id="form-feedback" class="feedback" aria-live="polite"></p>
+            </form>
+          </section>
+
+          <section class="panel panel-messages" id="messages">
+            <div class="panel-header">
+              <p class="eyebrow">Saved entries</p>
+              <h2>Recent submissions</h2>
+            </div>
+            <div id="messages-list" class="messages-list">
+              <p class="empty-state">No messages yet. Submit the form to create your first record.</p>
+            </div>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "name": "fullstack-studio-site",
+  "version": "1.0.0",
+  "description": "A lightweight full-stack website with a custom Node.js server and contact API.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "full-stack",
+    "website",
+    "nodejs"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.15.0"
+  }
+}
